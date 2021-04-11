@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>ELBO — What &amp; Why | Yunfan Jiang’s Blog</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="ELBO — What &amp; Why" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The ELBO (evidence lower bound) is a key quantity in Variational Bayesian Methods. It transforms inference problems, which are always intractable, into optimization problems that can be solved with, for example, gradient-based methods." />
+<meta property="og:description" content="The ELBO (evidence lower bound) is a key quantity in Variational Bayesian Methods. It transforms inference problems, which are always intractable, into optimization problems that can be solved with, for example, gradient-based methods." />
+<link rel="canonical" href="http://localhost:4000/2021/01/11/ELBO.html" />
+<meta property="og:url" content="http://localhost:4000/2021/01/11/ELBO.html" />
+<meta property="og:site_name" content="Yunfan Jiang’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-11T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="ELBO — What &amp; Why" />
+<script type="application/ld+json">
+{"description":"The ELBO (evidence lower bound) is a key quantity in Variational Bayesian Methods. It transforms inference problems, which are always intractable, into optimization problems that can be solved with, for example, gradient-based methods.","headline":"ELBO — What &amp; Why","dateModified":"2021-01-11T00:00:00+08:00","datePublished":"2021-01-11T00:00:00+08:00","url":"http://localhost:4000/2021/01/11/ELBO.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/01/11/ELBO.html"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Yunfan Jiang&apos;s Blog" /><script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      extensions: ["tex2jax.js"],
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\[","\]"], ["\\[","\\]"] ],
+        processEscapes: true
+      },
+      messageStyle: "none",
+      "HTML-CSS": { availableFonts: ["TeX"] }
+    });
+  </script>
+  
+  <script type="text/javascript"
+     src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js">
+  </script>
+  
+</head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Yunfan Jiang&#39;s Blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class='page-link' href='http://web.stanford.edu/~yjiang05/' target='_blank'>About</a>
+            <a class='page-link' href='https://github.com/yjiang05/yjiang05.github.io' target='_blank'>Site Code</a>
+            <!-- <a class="page-link" href="/about/">About</a> --></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">ELBO — What &amp; Why</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2021-01-11T00:00:00+08:00" itemprop="datePublished">Jan 11, 2021
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The ELBO (evidence lower bound) is a key quantity in <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods">Variational Bayesian Methods</a>. It transforms inference problems, which are always <em>intractable</em>, into optimization problems that can be solved with, for example, gradient-based methods.</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>In this post, I’ll introduce an important concept in  <a href="https://en.wikipedia.org/wiki/Variational_Bayesian_methods">Variational Bayesian (VB) Methods</a> — ELBO (evidence lower bound, also known as variational lower bound) — and its derivations, alongside some digging into it. ELBO enables the rewriting of statistical inference problems as optimization problems, the so-called <em>inference-optimization duality</em> (see <a href="https://blog.evjang.com/2016/08/variational-bayes.html">Eric Jang’s blog</a>). Combined with optimization methods such as gradient descent and modern approximation techniques, e.g., deep neural networks, inference on complex distributions can be achieved. Numerous applications can be found in <a href="https://arxiv.org/abs/1312.6114v10">VAE</a>, <a href="https://arxiv.org/abs/1806.02426">DVRL</a>, <a href="https://arxiv.org/abs/1803.10760">MERLIN</a>, to name a few.</p>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<ul>
+  <li>Motivation</li>
+  <li>Derivation: From a View of KL Divergence</li>
+  <li>Derivation: From a View of Observations</li>
+  <li>Insights</li>
+  <li>Summaries</li>
+</ul>
+
+<h2 id="motivation">Motivation</h2>
+
+<p>Statistical inference problems focus on inferring the value of one random variable given the value of another random variable. Given the observation, $x$, we are interested in finding the <em>posterior</em> distribution of the latent variable $z$ (we call it “latent” as it is not observed), $p(z \vert x)$. However, this is generally <em>intractable</em> as when we express it using <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes’ theorem</a>, the computation of the marginal distribution of observation at the denominator requires the integration (or summation) over the whole latent space:</p>
+
+\[\begin{align}
+p(z|x)=\frac{p(z)p(x \vert z)}{p(x)}=\frac{p(z)p(x \vert z)}{\int_z p(x,z) dz}.
+\tag{1}
+\end{align}\]
+
+<p>A natural question would be that “Can we use another distribution, let’s say $q(z \vert x)$, as an approximation of the true <em>posterior</em> distribution?” The answer is “Yes” and I shall explain in the next section.</p>
+
+<h2 id="derivation-from-a-view-of-kl-divergence">Derivation: From a View of KL Divergence</h2>
+
+<p>Consider the problem that using a distribution $q_\theta(z \vert x)$ parameterized by $\theta$ to approximate the true <em>posterior</em> distribution $p(z \vert x)$, the first issue we need to address is to select a suitable criterion to measure how close is $q_\theta(z \vert x)$ to $p(z \vert x)$. <a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler divergence</a> is such a metric. Specifically, we use reverse KL divergence here (see <a href="https://blog.evjang.com/2016/08/variational-bayes.html">Eric Jang’s blog</a> for more insights into forward KL and reverse KL).</p>
+
+<p>The KL divergence between $q_\theta(z \vert x)$ and $p(z \vert x)$ is</p>
+
+\[\begin{align}
+D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x)\right) &amp;= \int_z q_\theta (z \vert x) \log \frac{q_\theta(z \vert x)}{p(z \vert x)} dz\\
+&amp;= -\int_z q_\theta(z \vert x) \log \frac{p(z \vert x)}{q_\theta(z \vert x)} dz\\
+&amp;= -\int_z q_\theta(z \vert x) \log \frac{p(z,x)}{q_\theta(z \vert x)p(x)} dz \\
+&amp;= - \left( \int_z q_\theta(z \vert x) \log \frac{p(z,x)}{q_\theta(z \vert x)} dz - \int_z q_\theta(z \vert x) \log p(x) dz\right) \\
+&amp;= - \int_z q_\theta(z \vert x) \log \frac{p(z,x)}{q_\theta(z \vert x)} dz + \log p(x) \\ 
+&amp;= \int_z q_\theta(z \vert x) \log \frac{q_\theta(z \vert x)}{p(z,x)} dz + \log p(x).
+\tag{2}
+\end{align}\]
+
+<p>To minimize the KL divergence <em>w.r.t.</em> parameters $\theta$ we need to minimize the term $\int_z q_\theta(z \vert x) \log \frac{q_\theta(z \vert x)}{p(z,x)} dz$. It leads to maximize its negation $\mathcal{L} = -\int_z q_\theta(z \vert x) \log \frac{q_\theta(z \vert x)}{p(z,x)} dz$, which is known as the <em>evidence lower bound</em> (ELBO). We will find some intuitive explanations about its name by plugging $\mathcal{L}$ into Eq. (2):</p>
+
+\[\begin{align}
+\log p(x) = \mathcal{L} + D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x)\right).
+\tag{3}
+\end{align}\]
+
+<p>By definition, the term “<em>evidence</em>” is the value of a likelihood function evaluated with fixed parameters. Note that the KL divergence at the right-hand side of Eq. (3) is non-negative, the term $\log p(x)$ is greater or equal to $\mathcal{L}$. And hence $\mathcal{L}$ sets a lower bound for evidence.</p>
+
+<h2 id="derivation-from-a-view-of-observations">Derivation: From a View of Observations</h2>
+
+<p>If we start the derivation from the marginal distribution of observations,</p>
+
+\[\begin{align}
+\log p(x) &amp;= \log \int_z p(x, z) dz \\
+&amp;= \log \int_z p(x, z) \frac{q_\theta(z \vert x)}{q_\theta(z \vert x)} dz \\
+&amp;= \log \mathbb{E}_{z \sim q_\theta(z \vert x)} \left[ \frac{p(x, z)}{q_\theta(z \vert x)}\right] \\
+&amp;\geq \mathbb{E}_z \left[ \log \frac{p(x,z)}{q_\theta(z \vert x)}\right] \text{by Jensen's inequality} \\
+&amp;= \mathbb{E}_z \left[ \log p(x,z) \right] + \int_z q_\theta(z \vert x) \log \frac{1}{q_\theta(z \vert x)} dz \\
+&amp;= \mathbb{E}_z \left[ \log p(x,z) \right] + H(Z)
+\tag{4},
+\end{align}\]
+
+<p>where $H(Z)$ is the Shannon entropy. It is straightforward to show that the right hand of Eq. (4) is the same as $\mathcal{L}$, one expression of ELBO we derived in the previous section. It is also obvious that the term $\mathbb{E}_z \left[ \log p(x,z) \right] + H(Z)$ is a lower bound for the log-marginal probability of observations, which means that we just need to maximize ELBO when we wish to maximize the marginal probability of observations.</p>
+
+<h2 id="insights">Insights</h2>
+
+<p>First of all, let’s derive further from Eq. (4):</p>
+
+\[\begin{align}
+\mathcal{L} &amp;= \mathbb{E}_{z \sim q_\theta(z \vert x)} \left[ \log p(x,z) \right] + H(Z) \\
+&amp;= \int_z q_\theta(z \vert x) \log \left(p(x|z)p(z)\right)dz + \int_z q_\theta(z \vert x) \log \frac{1}{q_\theta(z \vert x)} dz\\
+&amp;= \int_z q_\theta(z \vert x) \log p(x|z) dz + \int_z q_\theta(z \vert x) \log p(z) dz + \int_z q_\theta(z \vert x) \log \frac{1}{q_\theta(z \vert x)} dz\\
+&amp;= \mathbb{E}_z \left[ \log p(x|z)\right] - \int_z q_\theta(z \vert x) \log \left(\frac{q_\theta(z \vert x)}{p(z)}\right) dz \\
+&amp;= \mathbb{E}_z \left[ \log p(x|z)\right] - D_{KL}\left(q_\theta(z \vert x) \Vert p(z)\right).
+\tag{5}
+\end{align}\]
+
+<p>Eq. (5) shows that the ELBO has two terms, one expected log-likelihood term and one KL divergence term. It suggests that the ELBO is a trade-off between the reconstruction accuracy against the complexity of the <em>posterior</em> approximation. The KL divergence term can be interpreted as a measure of the additional information required to express the <em>posterior</em> relative to the <em>prior</em>. As it approaches zero, the <em>posterior</em> is fully obtainable from the <em>prior</em>.</p>
+
+<p>Furthermore, let’s think about the reason behind the reverse KL divergence we used to derive Eq. (2):</p>
+
+\[\begin{align}
+D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x) \right) = \int_z q_\theta(z \vert x) \log \frac{q_\theta(z \vert x)}{p(z \vert x)} dz.
+\tag{6}
+\end{align}\]
+
+<p>It turns out that the variational distribution $q_\theta(z \vert x)$ is prevented from spanning the whole space. Consider the case where the denominator in Eq. (6) is zero, the value of $q_\theta(z \vert x)$ has to be zero as well otherwise the KL divergence goes to infinity. In summary, the reverse KL divergence has the effect of zero-forcing as minimizing it leads to $q_\theta (z \vert x)$ being squeezed under $p (z \vert x)$ (see <a href="https://blog.evjang.com/2016/08/variational-bayes.html">Eric Jang’s blog</a>).</p>
+
+<h2 id="summaries">Summaries</h2>
+
+<p>In this post, we begin with the concept of variational inference, then derive the ELBO from several points of view, and finally dig deeper facts behind the ELBO. As I mentioned at the very beginning, it plays an important role because it provides a framework in which the statistical inference can be transformed into optimization, leading to more and more amazing applications in the deep learning community.</p>
+
+<p>Thanks for your interest and reading!</p>
+
+  </div><a class="u-url" href="/2021/01/11/ELBO.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Yunfan Jiang&#39;s Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Yunfan Jiang&#39;s Blog</li><li><a class="u-email" href="mailto:yunfanjiang05@gmail.com">yunfanjiang05@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/yjiang05" target="_blank"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">yjiang05</span></a></li><li><a href="https://www.linkedin.com/in/yunfanjiang" target="_blank"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">yunfanjiang</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Hi there, thanks for visiting. This is my Blog where I summarize my readings, express and share my ideas, record my progress, and so on. Wish you a nice journal in my Blog!</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
