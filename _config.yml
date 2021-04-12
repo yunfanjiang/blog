@@ -21,7 +21,7 @@
 title: Yunfan Jiang's Blog
 email: yunfanjiang05@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Hi there, thanks for visiting. This is my Blog where I summarize my readings, express and share my ideas, record my progress, and so on. Wish you a nice journey in my Blog!
+  Math ∪ Philosophy ∪ Coding
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://yjiang05.github.io/"
 # twitter_username: jekyllrb
