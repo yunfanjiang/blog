@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-11T18:42:40+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Yunfan Jiang’s Blog</title><subtitle>Hi there, thanks for visiting. This is my Blog where I summarize my readings, express and share my ideas, record my progress, and so on. Wish you a nice journal in my Blog!</subtitle><entry><title type="html">On Auxiliary Tasks in Deep Reinforcement Learning</title><link href="http://localhost:4000/2021/03/14/AuxTasks.html" rel="alternate" type="text/html" title="On Auxiliary Tasks in Deep Reinforcement Learning" /><published>2021-03-14T00:00:00+08:00</published><updated>2021-03-14T00:00:00+08:00</updated><id>http://localhost:4000/2021/03/14/AuxTasks</id><content type="html" xml:base="http://localhost:4000/2021/03/14/AuxTasks.html">&lt;p&gt;In the world of reinforcement learning (RL), a new-born agent sometimes struggles at reaching goals that we wish it could achieve. RL practicers always augment the learning process of the agent with auxiliary tasks, which help the agent to learn much faster, more robustly, and ideally perform better. In this post, we will summarize those auxiliary tasks used in deep RL, share ideas behind intuitions, and hopefully inspire you in related work.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-13T18:25:51+08:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Yunfan Jiang’s Blog</title><subtitle>Math ∪ Philosophy ∪ Coding</subtitle><entry><title type="html">On Auxiliary Tasks in Deep Reinforcement Learning</title><link href="http://localhost:4000/2021/03/14/AuxTasks.html" rel="alternate" type="text/html" title="On Auxiliary Tasks in Deep Reinforcement Learning" /><published>2021-03-14T00:00:00+08:00</published><updated>2021-03-14T00:00:00+08:00</updated><id>http://localhost:4000/2021/03/14/AuxTasks</id><content type="html" xml:base="http://localhost:4000/2021/03/14/AuxTasks.html">&lt;p&gt;In the world of reinforcement learning (RL), a new-born agent sometimes struggles at reaching goals that we wish it could achieve. RL practicers always augment the learning process of the agent with auxiliary tasks, which help the agent to learn much faster, more robustly, and ideally perform better. In this post, we will summarize those auxiliary tasks used in deep RL, share ideas behind intuitions, and hopefully inspire you in related work.&lt;/p&gt;
 
 &lt;h2 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h2&gt;
 
@@ -616,11 +616,11 @@ I\left(x_{t+k};c_t \right) &amp;amp;= \sum_{x_{t+k}, c_t} p_k \left(x_{t+k},c_t 
 &lt;h2 id=&quot;table-of-contents&quot;&gt;Table of Contents&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Motivation&lt;/li&gt;
-  &lt;li&gt;Derivation: From a View of KL Divergence&lt;/li&gt;
-  &lt;li&gt;Derivation: From a View of Observations&lt;/li&gt;
-  &lt;li&gt;Insights&lt;/li&gt;
-  &lt;li&gt;Summaries&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#motivation&quot;&gt;Motivation&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#derivation_kl&quot;&gt;Derivation: From a View of KL Divergence&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#derivation_logpx&quot;&gt;Derivation: From a View of Observations&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#insight&quot;&gt;Insights&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a herf=&quot;#summary&quot;&gt;Summaries&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;motivation&quot;&gt;Motivation&lt;/h2&gt;
@@ -634,7 +634,7 @@ p(z|x)=\frac{p(z)p(x \vert z)}{p(x)}=\frac{p(z)p(x \vert z)}{\int_z p(x,z) dz}.
 
 &lt;p&gt;A natural question would be that “Can we use another distribution, let’s say $q(z \vert x)$, as an approximation of the true &lt;em&gt;posterior&lt;/em&gt; distribution?” The answer is “Yes” and I shall explain in the next section.&lt;/p&gt;
 
-&lt;h2 id=&quot;derivation-from-a-view-of-kl-divergence&quot;&gt;Derivation: From a View of KL Divergence&lt;/h2&gt;
+&lt;h2 id=&quot;derivation_kl&quot;&gt;Derivation: From a View of KL Divergence&lt;/h2&gt;
 
 &lt;p&gt;Consider the problem that using a distribution $q_\theta(z \vert x)$ parameterized by $\theta$ to approximate the true &lt;em&gt;posterior&lt;/em&gt; distribution $p(z \vert x)$, the first issue we need to address is to select a suitable criterion to measure how close is $q_\theta(z \vert x)$ to $p(z \vert x)$. &lt;a href=&quot;https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence&quot;&gt;Kullback–Leibler divergence&lt;/a&gt; is such a metric. Specifically, we use reverse KL divergence here (see &lt;a href=&quot;https://blog.evjang.com/2016/08/variational-bayes.html&quot;&gt;Eric Jang’s blog&lt;/a&gt; for more insights into forward KL and reverse KL).&lt;/p&gt;
 
@@ -659,7 +659,7 @@ D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x)\right) &amp;amp;= \int_z q_\t
 
 &lt;p&gt;By definition, the term “&lt;em&gt;evidence&lt;/em&gt;” is the value of a likelihood function evaluated with fixed parameters. Note that the KL divergence at the right-hand side of Eq. (3) is non-negative, the term $\log p(x)$ is greater or equal to $\mathcal{L}$. And hence $\mathcal{L}$ sets a lower bound for evidence.&lt;/p&gt;
 
-&lt;h2 id=&quot;derivation-from-a-view-of-observations&quot;&gt;Derivation: From a View of Observations&lt;/h2&gt;
+&lt;h2 id=&quot;derivation_logpx&quot;&gt;Derivation: From a View of Observations&lt;/h2&gt;
 
 &lt;p&gt;If we start the derivation from the marginal distribution of observations,&lt;/p&gt;
 
@@ -675,7 +675,7 @@ D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x)\right) &amp;amp;= \int_z q_\t
 
 &lt;p&gt;where $H(Z)$ is the Shannon entropy. It is straightforward to show that the right hand of Eq. (4) is the same as $\mathcal{L}$, one expression of ELBO we derived in the previous section. It is also obvious that the term $\mathbb{E}_z \left[ \log p(x,z) \right] + H(Z)$ is a lower bound for the log-marginal probability of observations, which means that we just need to maximize ELBO when we wish to maximize the marginal probability of observations.&lt;/p&gt;
 
-&lt;h2 id=&quot;insights&quot;&gt;Insights&lt;/h2&gt;
+&lt;h2 id=&quot;insight&quot;&gt;Insights&lt;/h2&gt;
 
 &lt;p&gt;First of all, let’s derive further from Eq. (4):&lt;/p&gt;
 
@@ -699,7 +699,7 @@ D_{KL}\left(q_\theta(z \vert x) \Vert p(z \vert x) \right) = \int_z q_\theta(z \
 
 &lt;p&gt;It turns out that the variational distribution $q_\theta(z \vert x)$ is prevented from spanning the whole space. Consider the case where the denominator in Eq. (6) is zero, the value of $q_\theta(z \vert x)$ has to be zero as well otherwise the KL divergence goes to infinity. In summary, the reverse KL divergence has the effect of zero-forcing as minimizing it leads to $q_\theta (z \vert x)$ being squeezed under $p (z \vert x)$ (see &lt;a href=&quot;https://blog.evjang.com/2016/08/variational-bayes.html&quot;&gt;Eric Jang’s blog&lt;/a&gt;).&lt;/p&gt;
 
-&lt;h2 id=&quot;summaries&quot;&gt;Summaries&lt;/h2&gt;
+&lt;h2 id=&quot;summary&quot;&gt;Summaries&lt;/h2&gt;
 
 &lt;p&gt;In this post, we begin with the concept of variational inference, then derive the ELBO from several points of view, and finally dig deeper facts behind the ELBO. As I mentioned at the very beginning, it plays an important role because it provides a framework in which the statistical inference can be transformed into optimization, leading to more and more amazing applications in the deep learning community.&lt;/p&gt;
 
