@@ -1,1 +1,3 @@
 _site/
+!_site/feed.xml
+!_site/sitemap.xml
