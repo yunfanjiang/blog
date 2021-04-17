@@ -42,7 +42,7 @@ disqus:
 
 google_analytics: UA-164554993-2
 
-show_excerpts: True
+show_excerpts: true
 
 # Exclude from processing.
 # The following items will not be processed, by default.
