@@ -23,7 +23,7 @@ email: yunfanjiang05@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Math ∪ Philosophy ∪ Coding
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://yunfanj.com/"
+url: "https://yunfanj.com/blog/"
 # twitter_username: jekyllrb
 github_username:  yunfanjiang
 linkedin_username: yunfanjiang
