@@ -40,7 +40,7 @@ markdown: kramdown
 disqus:
   shortname: yunfanjiangblog
 
-google_analytics:
+google_analytics: UA-200345588-1
 
 show_excerpts: true
 
