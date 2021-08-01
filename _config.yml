@@ -38,7 +38,7 @@ plugins:
 markdown: kramdown
 
 disqus:
-  shortname: yunfanjiangblog
+  shortname:
 
 google_analytics: UA-200345588-1
 
