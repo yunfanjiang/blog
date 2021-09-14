@@ -40,7 +40,7 @@ markdown: kramdown
 disqus:
   shortname:
 
-google_analytics: UA-207503775-2
+google_analytics: UA-207503775-1
 
 show_excerpts: true
 
